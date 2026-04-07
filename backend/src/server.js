@@ -49,5 +49,6 @@ app.use("/api/conversations", conversationRoute);
 connectDB().then(() => {
   server.listen(PORT, () => {
     console.log(`server bắt đầu trên cổng ${PORT}`);
+    console.log(`Swagger Api Docs Link http://localhost:${PORT}/api-docs`);
   });
 });
