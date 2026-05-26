@@ -22,6 +22,13 @@ export const chatService = {
     return { messages: res.data.messages, cursor: res.data.nextCursor };
   },
 
+  async searchMessages(conversationId: string, keyword: string): Promise<Message[]> {
+    const res = await api.get(`/messages/search/${conversationId}`, {
+      params: { keyword },
+    });
+    return res.data.messages;
+  },
+
   async sendDirectMessage(
     recipientId: string,
     content: string = "",

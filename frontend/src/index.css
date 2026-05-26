@@ -327,6 +327,29 @@
       transform: translateY(0) scale(1);
     }
   }
+
+  @keyframes messageHighlightScale {
+    0% {
+      background-color: rgba(250, 204, 21, 0);
+      transform: scale(1);
+    }
+    25% {
+      background-color: rgba(250, 204, 21, 0.5);
+      transform: scale(1.03);
+    }
+    50% {
+      background-color: rgba(250, 204, 21, 0.3);
+      transform: scale(1.02);
+    }
+    100% {
+      background-color: rgba(250, 204, 21, 0);
+      transform: scale(1);
+    }
+  }
+
+  .highlight-message {
+    animation: messageHighlightScale 1s ease forwards;
+  }
 }
 
 :root {

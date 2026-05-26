@@ -79,3 +79,43 @@ export const sendGroupMessage = async (req, res) => {
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
+
+export const searchMessages = async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const { keyword } = req.query;
+    const userId = req.user._id;
+
+    if (!keyword || keyword.trim() === "") {
+      return res.status(400).json({ message: "Vui lòng nhập từ khóa tìm kiếm" });
+    }
+
+    // Kiểm tra người dùng có trong cuộc trò chuyện này không
+    const conversation = await Conversation.findById(conversationId);
+    if (!conversation) {
+      return res.status(404).json({ message: "Cuộc trò chuyện không tồn tại" });
+    }
+
+    const isParticipant = conversation.participants.some(
+      (p) => p.userId.toString() === userId.toString()
+    );
+
+    if (!isParticipant) {
+      return res.status(403).json({ message: "Bạn không có quyền truy cập" });
+    }
+
+    // Tìm kiếm tin nhắn chứa từ khóa (không phân biệt hoa/thường)
+    const messages = await Message.find({
+      conversationId,
+      content: { $regex: keyword, $options: "i" },
+    })
+      .populate("senderId", "displayName avatarUrl")
+      .sort({ createdAt: -1 })
+      .limit(50);
+
+    return res.status(200).json({ messages });
+  } catch (error) {
+    console.error("Lỗi xảy ra khi tìm kiếm tin nhắn", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};

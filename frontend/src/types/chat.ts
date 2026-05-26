@@ -44,10 +44,16 @@ export interface ConversationResponse {
   conversations: Conversation[];
 }
 
+export interface MessageSender {
+  _id: string;
+  displayName: string;
+  avatarUrl?: string | null;
+}
+
 export interface Message {
   _id: string;
   conversationId: string;
-  senderId: string;
+  senderId: string | MessageSender;
   content: string | null;
   imgUrl?: string | null;
   updatedAt?: string | null;

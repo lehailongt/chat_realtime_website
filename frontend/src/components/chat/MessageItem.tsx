@@ -3,6 +3,7 @@ import type { Conversation, Message, Participant } from "@/types/chat";
 import UserAvatar from "./UserAvatar";
 import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
+import { useSearchStore } from "@/stores/useSearchStore";
 
 interface MessageItemProps {
   message: Message;
@@ -19,6 +20,7 @@ const MessageItem = ({
   selectedConvo,
   lastMessageStatus,
 }: MessageItemProps) => {
+  const { highlightedMessageId } = useSearchStore();
   const prev = index + 1 < messages.length ? messages[index + 1] : undefined;
 
   const isShowTime =
@@ -28,6 +30,7 @@ const MessageItem = ({
       300000; // 5 phút
 
   const isGroupBreak = isShowTime || message.senderId !== prev?.senderId;
+  const isHighlighted = highlightedMessageId === message._id;
 
   const participant = selectedConvo.participants.find(
     (p: Participant) => p._id.toString() === message.senderId.toString()
@@ -43,9 +46,11 @@ const MessageItem = ({
       )}
 
       <div
+        id={`message-${message._id}`}
         className={cn(
-          "flex gap-2 message-bounce mt-1",
-          message.isOwn ? "justify-end" : "justify-start"
+          "flex gap-2 message-bounce mt-1 rounded-lg px-2 py-1",
+          message.isOwn ? "justify-end" : "justify-start",
+          isHighlighted && "highlight-message"
         )}
       >
         {/* avatar */}
@@ -54,7 +59,7 @@ const MessageItem = ({
             {isGroupBreak && (
               <UserAvatar
                 type="chat"
-                name={participant?.displayName ?? "Moji"}
+                name={participant?.displayName ?? "LongT"}
                 avatarUrl={participant?.avatarUrl ?? undefined}
               />
             )}
