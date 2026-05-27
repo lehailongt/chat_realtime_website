@@ -209,6 +209,19 @@ export const useChatStore = create<ChatState>()(
           };
         });
       },
+      updateMessage: (conversationId, messageId, updates) => {
+        set((state) => ({
+          messages: {
+            ...state.messages,
+            [conversationId]: {
+              ...state.messages[conversationId],
+              items: state.messages[conversationId]?.items?.map((m) =>
+                m._id === messageId ? { ...m, ...updates } : m
+              ) ?? [],
+            },
+          },
+        }));
+      },
       createConversation: async (type, name, memberIds) => {
         try {
           set({ loading: true });

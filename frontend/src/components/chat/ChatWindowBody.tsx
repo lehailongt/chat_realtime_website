@@ -10,6 +10,7 @@ const ChatWindowBody = () => {
     conversations,
     messages: allMessages,
     fetchMessages,
+    updateMessage,
   } = useChatStore();
   const [lastMessageStatus, setLastMessageStatus] = useState<"delivered" | "seen">(
     "delivered"
@@ -98,12 +99,12 @@ const ChatWindowBody = () => {
   }
 
   return (
-    <div className="p-4 bg-primary-foreground h-full flex flex-col overflow-hidden">
+    <div className="bg-primary-foreground h-full flex flex-col">
       <div
         id="scrollableDiv"
         ref={containerRef}
         onScroll={handleScrollSave}
-        className="flex flex-col-reverse overflow-y-auto overflow-x-hidden beautiful-scrollbar"
+        className="flex flex-col-reverse overflow-y-auto beautiful-scrollbar p-4 flex-1"
       >
         <div ref={messagesEndRef}></div>
         <InfiniteScroll
@@ -127,6 +128,10 @@ const ChatWindowBody = () => {
               messages={reversedMessages}
               selectedConvo={selectedConvo}
               lastMessageStatus={lastMessageStatus}
+              onMessageDeleted={(messageId) =>
+                activeConversationId &&
+                updateMessage(activeConversationId, messageId, { status: "deleted" })
+              }
             />
           ))}
         </InfiniteScroll>

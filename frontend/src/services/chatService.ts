@@ -92,4 +92,9 @@ export const chatService = {
 
     return res.data;
   },
+
+  async softDeleteMessage(messageId: string) {
+    const res = await api.delete(`/messages/${messageId}`);
+    return res.data;
+  },
 };

@@ -20,6 +20,11 @@ const messageSchema = new mongoose.Schema(
     imgUrl: {
       type: String,
     },
+    status: {
+      type: String,
+      enum: ["normal", "deleted"],
+      default: "normal",
+    },
   },
   {
     timestamps: true,

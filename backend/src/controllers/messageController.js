@@ -165,3 +165,31 @@ export const deleteMessageImage = async (req, res) => {
     return res.status(500).json({ message: "Xóa ảnh thất bại" });
   }
 };
+
+export const softDeleteMessage = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const userId = req.user._id;
+
+    // Lấy tin nhắn
+    const message = await Message.findById(messageId);
+
+    if (!message) {
+      return res.status(404).json({ message: "Tin nhắn không tồn tại" });
+    }
+
+    // Kiểm tra xem user có phải là người gửi tin nhắn này không
+    if (message.senderId.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "Bạn không có quyền xóa tin nhắn này" });
+    }
+
+    // Soft delete - chỉ cập nhật status
+    message.status = "deleted";
+    await message.save();
+
+    return res.status(200).json({ message: "Xóa tin nhắn thành công", data: message });
+  } catch (error) {
+    console.error("Lỗi xảy ra khi xóa tin nhắn", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
