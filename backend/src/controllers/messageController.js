@@ -5,7 +5,10 @@ import {
   updateConversationAfterCreateMessage,
 } from "../utils/messageHelper.js";
 import { io } from "../socket/index.js";
-import { uploadImageFromBuffer, deleteImageFromCloudinary } from "../middlewares/uploadMiddleware.js";
+import { 
+  uploadImageFromBuffer, 
+  deleteImageFromCloudinary 
+} from "../middlewares/uploadMiddleware.js";
 
 export const sendDirectMessage = async (req, res) => {
   try {
@@ -132,7 +135,7 @@ export const uploadMessageImage = async (req, res) => {
     }
 
     const result = await uploadImageFromBuffer(file.buffer, {
-      folder: "moji_chat/messages",
+      folder: "chat_now/messages",
       transformation: [{ width: 1000, height: 1000, crop: "limit" }],
     });
 

@@ -293,6 +293,22 @@
     @apply scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent dark:scrollbar-thumb-slate-600;
   }
 
+  .hide-scrollbar {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+    overflow-y: auto !important;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+  }
+
+  textarea::-webkit-scrollbar {
+    width: 0 !important;
+    display: none !important;
+  }
+
   /* Animations */
   .transition-bounce {
     transition: var(--transition-bounce);
