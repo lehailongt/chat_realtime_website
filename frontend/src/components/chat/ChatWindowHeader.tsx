@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useChatStore } from "@/stores/useChatStore";
 import type { Conversation } from "@/types/chat";
 import { SidebarTrigger } from "../ui/sidebar";
@@ -10,13 +11,12 @@ import { useSocketStore } from "@/stores/useSocketStore";
 import { Search } from "lucide-react";
 import { Button } from "../ui/button";
 import SearchMessageModal from "./SearchMessageModal";
-import { useUIStore } from "@/stores/useUIStore";
 
 const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { conversations, activeConversationId } = useChatStore();
   const { user } = useAuthStore();
   const { onlineUsers } = useSocketStore();
-  const { isSearchOpen, setIsSearchOpen } = useUIStore();
 
   let otherUser;
 

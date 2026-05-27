@@ -79,7 +79,16 @@ const MessageItem = ({
               message.isOwn ? "chat-bubble-sent border-0" : "chat-bubble-received"
             )}
           >
-            <p className="text-sm leading-relaxed break-words">{message.content}</p>
+            {message.imgUrl && (
+              <img
+                src={message.imgUrl}
+                alt="Message image"
+                className="max-h-64 max-w-64 rounded-lg object-cover mb-2"
+              />
+            )}
+            {message.content && (
+              <p className="text-sm leading-relaxed break-words">{message.content}</p>
+            )}
           </Card>
 
           {/* seen/ delivered */}

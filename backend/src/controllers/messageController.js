@@ -5,16 +5,17 @@ import {
   updateConversationAfterCreateMessage,
 } from "../utils/messageHelper.js";
 import { io } from "../socket/index.js";
+import { uploadImageFromBuffer, deleteImageFromCloudinary } from "../middlewares/uploadMiddleware.js";
 
 export const sendDirectMessage = async (req, res) => {
   try {
-    const { recipientId, content, conversationId } = req.body;
+    const { recipientId, content, conversationId, imgUrl } = req.body;
     const senderId = req.user._id;
 
     let conversation;
 
-    if (!content) {
-      return res.status(400).json({ message: "Thiếu nội dung" });
+    if (!content && !imgUrl) {
+      return res.status(400).json({ message: "Thiếu nội dung hoặc hình ảnh" });
     }
 
     if (conversationId) {
@@ -37,6 +38,7 @@ export const sendDirectMessage = async (req, res) => {
       conversationId: conversation._id,
       senderId,
       content,
+      imgUrl,
     });
 
     updateConversationAfterCreateMessage(conversation, message, senderId);
@@ -54,18 +56,19 @@ export const sendDirectMessage = async (req, res) => {
 
 export const sendGroupMessage = async (req, res) => {
   try {
-    const { conversationId, content } = req.body;
+    const { conversationId, content, imgUrl } = req.body;
     const senderId = req.user._id;
     const conversation = req.conversation;
 
-    if (!content) {
-      return res.status(400).json("Thiếu nội dung");
+    if (!content && !imgUrl) {
+      return res.status(400).json("Thiếu nội dung hoặc hình ảnh");
     }
 
     const message = await Message.create({
       conversationId,
       senderId,
       content,
+      imgUrl,
     });
 
     updateConversationAfterCreateMessage(conversation, message, senderId);
@@ -117,5 +120,45 @@ export const searchMessages = async (req, res) => {
   } catch (error) {
     console.error("Lỗi xảy ra khi tìm kiếm tin nhắn", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
+export const uploadMessageImage = async (req, res) => {
+  try {
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ message: "Không có hình ảnh được tải lên" });
+    }
+
+    const result = await uploadImageFromBuffer(file.buffer, {
+      folder: "moji_chat/messages",
+      transformation: [{ width: 1000, height: 1000, crop: "limit" }],
+    });
+
+    return res.status(200).json({
+      imgUrl: result.secure_url,
+      publicId: result.public_id,
+    });
+  } catch (error) {
+    console.error("Lỗi khi upload hình ảnh tin nhắn", error);
+    return res.status(500).json({ message: "Upload thất bại" });
+  }
+};
+
+export const deleteMessageImage = async (req, res) => {
+  try {
+    const { publicId } = req.body;
+
+    if (!publicId) {
+      return res.status(400).json({ message: "Thiếu publicId" });
+    }
+
+    await deleteImageFromCloudinary(publicId);
+
+    return res.status(200).json({ message: "Xóa ảnh thành công" });
+  } catch (error) {
+    console.error("Lỗi khi xóa hình ảnh", error);
+    return res.status(500).json({ message: "Xóa ảnh thất bại" });
   }
 };

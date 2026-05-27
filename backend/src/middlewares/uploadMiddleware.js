@@ -29,3 +29,15 @@ export const uploadImageFromBuffer = (buffer, options) => {
     uploadStream.end(buffer);
   });
 };
+
+export const deleteImageFromCloudinary = (publicId) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.destroy(publicId, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+};
