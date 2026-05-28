@@ -7,8 +7,14 @@ export const friendService = {
   },
 
   async sendFriendRequest(to: string, message?: string) {
-    const res = await api.post("/friends/requests", { to, message });
-    return res.data.message;
+    try {
+      const res = await api.post("/friends/requests", { to, message });
+      return res.data.message;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Lỗi xảy ra khi gửi lời mời kết bạn";
+      throw new Error(errorMessage);
+    }
   },
 
   async getAllFriendRequest() {

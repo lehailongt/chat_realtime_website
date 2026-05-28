@@ -23,7 +23,7 @@ const AddFriendModal = () => {
   const [isFound, setIsFound] = useState<boolean | null>(null);
   const [searchUser, setSearchUser] = useState<User>();
   const [searchedUsername, setSearchedUsername] = useState("");
-  const { loading, searchByUsername, addFriend } = useFriendStore();
+  const { loading, searchByUsername, addFriend, getAllFriendRequests } = useFriendStore();
 
   const {
     register,
@@ -64,10 +64,14 @@ const AddFriendModal = () => {
     try {
       const message = await addFriend(searchUser._id, data.message.trim());
       toast.success(message);
+      await getAllFriendRequests();
 
       handleCancel();
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Lỗi xảy ra khi gửi lời mời kết bạn";
       console.error("Lỗi xảy ra khi gửi request từ form", error);
+      toast.error(errorMessage);
     }
   });
 

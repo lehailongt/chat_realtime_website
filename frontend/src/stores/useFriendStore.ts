@@ -27,8 +27,10 @@ export const useFriendStore = create<FriendState>((set, get) => ({
       const resultMessage = await friendService.sendFriendRequest(to, message);
       return resultMessage;
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Lỗi xảy ra khi gửi kết bạn. Hãy thử lại";
       console.error("Lỗi xảy ra khi addFriend", error);
-      return "Lỗi xảy ra khi gửi kết bạn. Hãy thử lại";
+      throw new Error(errorMessage);
     } finally {
       set({ loading: false });
     }
@@ -60,6 +62,8 @@ export const useFriendStore = create<FriendState>((set, get) => ({
       }));
     } catch (error) {
       console.error("Lỗi xảy ra khi acceptRequest", error);
+    } finally {
+      set({ loading: false });
     }
   },
   declineRequest: async (requestId) => {

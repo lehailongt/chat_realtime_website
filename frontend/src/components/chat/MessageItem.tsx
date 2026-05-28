@@ -131,7 +131,7 @@ const MessageItem = ({
               )}
             >
               {isDeleted ? (
-                <p className="text-sm italic text-muted-foreground">Tin nhắn đã bị xóa</p>
+                <p className="text-sm italic text-gray-300">Tin nhắn đã bị xóa</p>
               ) : (
                 <>
                   {message.imgUrl && (
